@@ -7,7 +7,7 @@ Better to run on emacs 26 to take benefits of frame-restack function.
 
    moves frames as follow: frame1 frame2 frame3 frame4 -> frame2 frame3 frame4 frame1
 
-### frame-cycle-head-to-tail
+### frame-cycle-tail-to-head
 
    moves frames as follow: frame1 frame2 frame3 frame4 -> frame4 frame1 frame2 frame3
 
