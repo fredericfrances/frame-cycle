@@ -12,5 +12,8 @@ Cycle frame content between existing emacs frames.
 Sample of configuration:
 
 (require 'frame-cycle)
+
 (global-set-key (kbd "C-<left>") 'frame-cycle-head-to-tail)
+   
 (global-set-key (kbd "C-<right>") 'frame-cycle-tail-to-head)
+   
