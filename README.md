@@ -1,5 +1,6 @@
 # frame-cycle
 Cycle frame content between existing emacs frames.
+Better to run on emacs 26 to take benefits of frame-restack function.
 
 ## Interactive functions description:
 ### frame-cycle-head-to-tail
