@@ -76,11 +76,9 @@ Call `frame-cycle-hook' after that."
       (let ((position (car positions))
             (new-frame (car new-frames)))
         (modify-frame-parameters new-frame position)
-        (raise-frame new-frame)
-;;        (message "%s -> %s" new-frame position)
-        
         ;; raise frame in reverse z-stack order
         ;; so new top frame is on top.
+        (raise-frame new-frame)
         (setq new-frames (cdr new-frames))
         (setq positions (cdr positions))))))
 
