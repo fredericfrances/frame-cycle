@@ -38,11 +38,6 @@
 ;; (global-set-key (kbd "C-<right>") 'frame-cycle-prev)
 ;;
 ;;; Code:
-;;(require 'cl)
-
-(defvar frame-cycle-hooks nil
-  "Hook called after `frame-cycle-apply'.")
-
 (defun frame-cycle-rotate-next (list)
   "Rotate LIST (list 1 2 3 4) becomes (list 2 3 4 1)."
   (let ((head (car list))
@@ -77,13 +72,17 @@ Call `frame-cycle-hook' after that."
          (new-frames (frame-cycle-rotate-list direction old-frames))
          (positions (frame-cycle-list-position old-frames)))
 
-    (mapcar* (lambda (new-frame position)
-               (modify-frame-parameters new-frame position)
-               ;; raise frame in reverse z-stack order
-               ;; so new top frame is on top.
-               (raise-frame new-frame))
-             new-frames positions))
-  (run-hooks 'frame-cycle-hooks))
+    (while positions
+      (let ((position (car positions))
+            (new-frame (car new-frames)))
+        (modify-frame-parameters new-frame position)
+        (raise-frame new-frame)
+;;        (message "%s -> %s" new-frame position)
+        
+        ;; raise frame in reverse z-stack order
+        ;; so new top frame is on top.
+        (setq new-frames (cdr new-frames))
+        (setq positions (cdr positions))))))
 
 (defun frame-cycle-next ()
   "Cycle frame using `frame-cycle-rotate-next'.
