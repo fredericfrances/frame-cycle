@@ -3,7 +3,7 @@
 ;; Copyright (C) 2019  ffrances
 ;;
 ;; Author: ffrances
-;;
+;; Version: 0.1
 ;; Keywords: frames
 ;;
 ;; This program is free software; you can redistribute it and/or modify
@@ -19,13 +19,9 @@
 ;;
 ;;; Commentary:
 ;;
-;; This is not part of gnu emacs.
+;; This is not part of gnu Emacs.
 ;;
-;; Can be usefull on multi-frame environment or when emacs is run on multiple screen.
-;;
-;; This lisp part try to cycle frame content instead of switching between frames.
-;; it is a bit slow for the moment.
-;;
+;; Cycle frame position but keep selected frame at top position.
 ;;
 ;;; Usage:
 ;;
