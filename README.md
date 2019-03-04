@@ -1,6 +1,6 @@
 # frame-cycle
 
-Cycle frame position, keep focuse on position occupied by original top frame.
+Cycle frame position, keep focus on position occupied by original top frame.
 
 Known issue: when cycling to fast, focus moves to another frame.
 
