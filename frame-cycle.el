@@ -54,6 +54,7 @@
             (list
              (cons 'top (frame-parameter frame 'top))
              (cons 'left (frame-parameter frame 'left))
+             (cons 'fullscreen (frame-parameter frame 'fullscreen))
              ))
           l-frames))
 
@@ -73,14 +74,24 @@ Call `frame-cycle-hook' after that."
          (positions (frame-cycle-list-position old-frames)))
 
     (while positions
-      (let ((position (car positions))
-            (new-frame (car new-frames)))
+      (let* ((position (car positions))
+             (new-frame (car new-frames))
+             (current-fullscreen (frame-parameter new-frame 'fullscreen))
+             )
+        (unless (equal nil current-fullscreen)
+          ;; remove fullscreen state for frame,
+          ;; will be restored if present in position.
+          (set-frame-parameter new-frame 'fullscreen nil)
+          (sleep-for 0.5))
+
         (modify-frame-parameters new-frame position)
         ;; raise frame in reverse z-stack order
         ;; so new top frame is on top.
         (raise-frame new-frame)
+        (redraw-frame new-frame)
         (setq new-frames (cdr new-frames))
         (setq positions (cdr positions))))))
+
 
 (defun frame-cycle-next ()
   "Cycle frame using `frame-cycle-rotate-next'.
