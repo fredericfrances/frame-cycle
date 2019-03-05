@@ -2,7 +2,10 @@
 
 Cycle frame position, keep focus on position occupied by original top frame.
 
-Known issue: when cycling to fast, focus moves to another frame.
+Known issues:
+   - this is slow
+   - when cycling to fast, focus might moves to another frame.
+   - fullscreen may create weird behaviors
 
 ## Interactive functions description:
 
