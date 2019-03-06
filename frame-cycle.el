@@ -141,36 +141,6 @@ Call `frame-cycle-hook' after that."
   "Select and return frame from FRAME-NAMES-ALIST."
   (let ((default (car (car frame-names-alist))))
     (cdr (assoc
-          (ivy-completing-read (format "Select Frame (current %s): "
-                                       default)
-                               frame-names-alist nil t nil)
-          frame-names-alist))))
-
-(defun frame-cycle-select-frame ()
-  "Select the frame by name and swap it with current frame.
-
-use `frame-cycle-swap' for this operation."
-
-  (interactive)
-  (let* ((frame-names-alist (frame-cycle-make-frame-name-alist (x-frame-list-z-order)))
-         (new-frame (frame-cycle-select-frame-by-name frame-names-alist)))
-
-    (frame-cycle-swap new-frame (selected-frame))
-    
-    (raise-frame new-frame)
-    (select-frame new-frame)))
-
-(defun frame-cycle-make-frame-name-alist (f-list)
-  "Return assoc list of positions from F-LIST."
-  (mapcar
-   (lambda (frame)
-     (cons (format-frame-info frame) frame))
-   f-list))
-
-(defun frame-cycle-select-frame-by-name (frame-names-alist)
-  "Select and return frame from FRAME-NAMES-ALIST."
-  (let ((default (car (car frame-names-alist))))
-    (cdr (assoc
           (completing-read (format "Select Frame (current %s): "
                                        default)
                                frame-names-alist nil t nil)
