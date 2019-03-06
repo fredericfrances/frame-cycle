@@ -72,58 +72,63 @@
          (frame-cycle-rotate-prev list))
         (t list)))
 
+(defun frame-cycle-remove-fullscreen-apply-parameters( frame parameters )
+  "Remove 'fullscreen parameter from FRAME and apply PARAMETERS."
+  (when (frame-parameter frame 'fullscreen)
+    (set-frame-parameter frame 'fullscreen nil)
+    ;; Manipulating a frame without waiting for the fullscreen
+    ;; animation to complete can cause a crash, or other unexpected
+    ;; behavior, on macOS (bug#28496).
+    (when (featurep 'cocoa) (sleep-for 0.5)))
+
+  (modify-frame-parameters frame parameters)
+
+  (when (frame-parameter frame 'fullscreen)
+    ;; Manipulating a frame without waiting for the fullscreen
+    ;; animation to complete can cause a crash, or other unexpected
+    ;; behavior, on macOS (bug#28496).
+    (when (featurep 'cocoa) (sleep-for 0.5))))
+
 (defun frame-cycle-apply (direction)
   "Rotate frame in DIRECTION 'prev or 'next.
 Call `frame-cycle-hook' after that."
   (let* ((old-frames (reverse (x-frame-list-z-order)))
          (new-frames (frame-cycle-rotate-list direction old-frames))
-         (positions (frame-cycle-list-position old-frames)))
+         (parameters (frame-cycle-list-position old-frames))
+;;         (ret (list))
+         )
 
-    (while positions
-      (let* ((position (car positions))
-             (new-frame (car new-frames))
-             (current-fullscreen (frame-parameter new-frame 'fullscreen))
-             )
-        (unless (equal nil current-fullscreen)
-          ;; remove fullscreen state for frame,
-          ;; will be restored if present in position.
-          (set-frame-parameter new-frame 'fullscreen nil)
-          ;; time to apply? see `toggle-frame-fullscreen'?
-          (sleep-for 0.5)
-        )
-        (modify-frame-parameters new-frame position)
-        ;; time to apply? see `toggle-frame-fullscreen'?
-        (sleep-for 0.5)
+    (while parameters
+      (let* ((parameter (car parameters))
+             (new-frame (car new-frames)))
+;;        (setq ret (cons new-frame ret))
+        (setq new-frames (cdr new-frames))
+        (setq parameters (cdr parameters))
+
+        (frame-cycle-remove-fullscreen-apply-parameters new-frame parameter)
 
         ;; raise frame in reverse z-stack order
         ;; so new top frame is on top.
         (raise-frame new-frame)
-        (redraw-frame new-frame)
-        (setq new-frames (cdr new-frames))
-        (setq positions (cdr positions))))))
+        (select-frame new-frame))
+      )
+;;    ret
+    ))
 
 (defun format-frame-info (frame)
-  (format "%s @ %sx%s+%s+%s"
+  (format "%s @ %sx%s"
           (frame-parameter frame 'name)
-          (frame-parameter frame 'width)
-          (frame-parameter frame 'height)
           (frame-parameter frame 'top)
-          (frame-parameter frame 'left)
-          (frame-parameter frame 'display)))
+          (frame-parameter frame 'left)))
+
 
 (defun frame-cycle-swap (frame1 frame2)
   "Swap FRAME1 and FRAME2 position."
   (unless (equal frame1 frame2)
     (let ((frame1-info     (frame-cycle-frame-position frame1))
           (frame2-info     (frame-cycle-frame-position frame2)))
-      ;; get out of fullscreen befor swap.
-      (when (frame-parameter frame1 'fullscreen)
-        (set-frame-parameter frame1 'fullscreen nil))
-      (when (frame-parameter frame2 'fullscreen)
-        (set-frame-parameter frame2 'fullscreen nil))
-      (modify-frame-parameters frame1 frame2-info)
-      (modify-frame-parameters frame2 frame1-info)
-      )))
+      (frame-cycle-remove-fullscreen-apply-parameters frame1 frame2-info)
+      (frame-cycle-remove-fullscreen-apply-parameters frame2 frame1-info))))
 
 (defun frame-cycle-make-frame-name-alist (f-list)
   "Return assoc list of positions from F-LIST."
@@ -151,7 +156,37 @@ use `frame-cycle-swap' for this operation."
          (new-frame (frame-cycle-select-frame-by-name frame-names-alist)))
 
     (frame-cycle-swap new-frame (selected-frame))
-    (sleep-for 0.5) ;; time to apply, see `toggle-frame-fullscreen'?
+    
+    (raise-frame new-frame)
+    (select-frame new-frame)))
+
+(defun frame-cycle-make-frame-name-alist (f-list)
+  "Return assoc list of positions from F-LIST."
+  (mapcar
+   (lambda (frame)
+     (cons (format-frame-info frame) frame))
+   f-list))
+
+(defun frame-cycle-select-frame-by-name (frame-names-alist)
+  "Select and return frame from FRAME-NAMES-ALIST."
+  (let ((default (car (car frame-names-alist))))
+    (cdr (assoc
+          (ivy-completing-read (format "Select Frame (current %s): "
+                                       default)
+                               frame-names-alist nil t nil)
+          frame-names-alist))))
+
+(defun frame-cycle-select-frame ()
+  "Select the frame by name and swap it with current frame.
+
+use `frame-cycle-swap' for this operation."
+
+  (interactive)
+  (let* ((frame-names-alist (frame-cycle-make-frame-name-alist (x-frame-list-z-order)))
+         (new-frame (frame-cycle-select-frame-by-name frame-names-alist)))
+
+    (frame-cycle-swap new-frame (selected-frame))
+
     (raise-frame new-frame)
     (select-frame new-frame)))
 
