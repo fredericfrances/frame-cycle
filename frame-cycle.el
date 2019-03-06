@@ -171,7 +171,7 @@ use `frame-cycle-swap' for this operation."
   "Select and return frame from FRAME-NAMES-ALIST."
   (let ((default (car (car frame-names-alist))))
     (cdr (assoc
-          (ivy-completing-read (format "Select Frame (current %s): "
+          (completing-read (format "Select Frame (current %s): "
                                        default)
                                frame-names-alist nil t nil)
           frame-names-alist))))
