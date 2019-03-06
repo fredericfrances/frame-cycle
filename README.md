@@ -19,7 +19,7 @@ Known issues:
 
 ### frame-cycle-select-frame
 
-    select a frame to swap with.
+   select a frame to swap with.
 
 ## Configuration sample:
 
