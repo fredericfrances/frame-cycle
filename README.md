@@ -11,13 +11,11 @@ Known issues:
 
 ### frame-cycle-next
 
-   moves frames as follow:
-         frame1 frame2 frame3 frame4 -> frame2 frame3 frame4 frame1
+   moves frames as follow:  frame1 frame2 frame3 frame4 -> frame2 frame3 frame4 frame1
 
 ### frame-cycle-prev
 
-   moves frames as follow:
-         frame1 frame2 frame3 frame4 -> frame4 frame1 frame2 frame3
+   moves frames as follow:  frame1 frame2 frame3 frame4 -> frame4 frame1 frame2 frame3
 
 ### frame-cycle-select-frame
 
