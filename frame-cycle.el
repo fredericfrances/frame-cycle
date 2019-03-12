@@ -90,18 +90,15 @@
     (when (featurep 'cocoa) (sleep-for 0.5))))
 
 (defun frame-cycle-apply (direction)
-  "Rotate frame in DIRECTION 'prev or 'next.
-Call `frame-cycle-hook' after that."
+  "Rotate frames in DIRECTION 'prev or 'next."
   (let* ((old-frames (reverse (x-frame-list-z-order)))
          (new-frames (frame-cycle-rotate-list direction old-frames))
          (parameters (frame-cycle-list-position old-frames))
-;;         (ret (list))
          )
 
     (while parameters
       (let* ((parameter (car parameters))
              (new-frame (car new-frames)))
-;;        (setq ret (cons new-frame ret))
         (setq new-frames (cdr new-frames))
         (setq parameters (cdr parameters))
 
@@ -112,7 +109,6 @@ Call `frame-cycle-hook' after that."
         (raise-frame new-frame)
         (select-frame new-frame))
       )
-;;    ret
     ))
 
 (defun format-frame-info (frame)
