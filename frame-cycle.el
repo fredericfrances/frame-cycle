@@ -112,6 +112,7 @@
     ))
 
 (defun format-frame-info (frame)
+  "Provide FRAME string description."
   (format "%s @ %sx%s"
           (frame-parameter frame 'name)
           (frame-parameter frame 'top)
@@ -156,12 +157,18 @@ use `frame-cycle-swap' for this operation."
     (raise-frame new-frame)
     (select-frame new-frame)))
 
+(defun frame-cycle-delete-frame ()
+  "Select a frame and delete it."
+  (interactive)
+  (let* ((frame-names-alist (frame-cycle-make-frame-name-alist (x-frame-list-z-order)))
+         (d-frame (frame-cycle-select-frame-by-name frame-names-alist)))
+    (delete-frame d-frame)))
+
 (defun frame-cycle-next ()
   "Cycle frame using `frame-cycle-apply'.
 
 Moves frame content as follow:
-     frame1 frame2 frame3 frame4 ->  frame2 frame3 frame4 frame1
-"
+     frame1 frame2 frame3 frame4 ->  frame2 frame3 frame4 frame1"
   (interactive)
   (frame-cycle-apply 'next))
 
@@ -169,8 +176,7 @@ Moves frame content as follow:
   "Cycle frame using `frame-cycle-apply'.
 
 Moves frame content as follow:
-     frame1 frame2 frame3 frame4 ->  frame4 frame1 frame2 frame3 frame4
-"
+     frame1 frame2 frame3 frame4 ->  frame4 frame1 frame2 frame3 frame4"
   (interactive)
   (frame-cycle-apply 'prev))
 
