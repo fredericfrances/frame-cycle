@@ -168,7 +168,8 @@ use `frame-cycle-swap' for this operation."
   "Cycle frame using `frame-cycle-apply'.
 
 Moves frame content as follow:
-     frame1 frame2 frame3 frame4 ->  frame2 frame3 frame4 frame1"
+     frame1 frame2 frame3 frame4 ->
+     frame2 frame3 frame4 frame1"
   (interactive)
   (frame-cycle-apply 'next))
 
@@ -176,7 +177,8 @@ Moves frame content as follow:
   "Cycle frame using `frame-cycle-apply'.
 
 Moves frame content as follow:
-     frame1 frame2 frame3 frame4 ->  frame4 frame1 frame2 frame3 frame4"
+     frame1 frame2 frame3 frame4 ->
+     frame4 frame1 frame2 frame3"
   (interactive)
   (frame-cycle-apply 'prev))
 
